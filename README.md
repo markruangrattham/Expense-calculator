@@ -1,5 +1,5 @@
 # Expense-calculator
-I couldn't be brother to set up a google sheets so I did the next best thing....
+I couldn't be bother to set up a google sheets so I did the next best thing....
 
 ## 📊 Overview
 
