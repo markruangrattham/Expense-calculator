@@ -1,69 +1,32 @@
-import React, { useEffect, useState } from 'react';
-import { collection, query, where, getDocs } from 'firebase/firestore';
-import { auth, db } from '../firebase';
+import React from 'react';
+import { useApp } from '../contexts/AppContext';
+import Layout from './Layout';
+import Logo from './Logo';
 import Charts from './Charts';
-import { useNavigate } from 'react-router-dom';
-import './ChartsPage.css';
 
 const ChartsPage = () => {
-  const [expenses, setExpenses] = useState([]);
-  const [tags, setTags] = useState([]);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (auth.currentUser) {
-      fetchExpenses();
-      fetchTags();
-    }
-    // eslint-disable-next-line
-  }, []);
-
-  const fetchExpenses = async () => {
-    try {
-      const q = query(
-        collection(db, 'expenses'),
-        where('userId', '==', auth.currentUser.uid)
-      );
-      const querySnapshot = await getDocs(q);
-      const expensesData = querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-      setExpenses(expensesData);
-    } catch (err) {
-      // handle error
-    }
-  };
-
-  const fetchTags = async () => {
-    try {
-      const q = query(
-        collection(db, 'tags'),
-        where('userId', '==', auth.currentUser.uid)
-      );
-      const querySnapshot = await getDocs(q);
-      const tagsData = querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-      setTags(tagsData);
-    } catch (err) {
-      // handle error
-    }
-  };
+  const { expenses } = useApp();
 
   return (
-    <div className="charts-page-bg">
-      <div className="charts-page-container">
-        <div className="charts-page-header">
-          <button className="back-btn" onClick={() => navigate('/dashboard')}>&larr; Back to Dashboard</button>
-          <h1>Spending Analytics</h1>
+    <Layout>
+      <div className="space-y-6">
+        <div className="bg-[#b5c4a1] dark:bg-[#3a4d2b] p-6 rounded-lg shadow-md transition-colors duration-300">
+          <div className="flex items-center space-x-4 mb-4">
+            <Logo size="medium" />
+            <div>
+              <h1 className="text-3xl font-serif text-[#3a3a3a] dark:text-[#f5f2e3] mb-2">
+                Spending Analytics
+              </h1>
+              <p className="text-[#3a3a3a] dark:text-[#f5f2e3] opacity-80 font-sans">
+                Visualize your spending patterns and track your financial habits
+              </p>
+            </div>
+          </div>
         </div>
-        <div className="charts-card">
-          <Charts expenses={expenses} tags={tags} />
-        </div>
+        
+        <Charts expenses={expenses} />
       </div>
-    </div>
+    </Layout>
   );
 };
 
